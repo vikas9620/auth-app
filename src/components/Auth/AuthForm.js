@@ -12,39 +12,44 @@ const AuthForm = () => {
   };
   const submitHandler = (e) => {
     e.preventDefault();
-    setIsLoading(true)
+    setIsLoading(true);
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
-
+    let url;
     if (isLogin) {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDi9WstSBmbs3f6YcPzcvzqdIf7sGrtA24";
     } else {
-      fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDi9WstSBmbs3f6YcPzcvzqdIf7sGrtA24",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: enteredEmail,
-            password: enteredPassword,
-            returnSecureToken: true,
-           
-            
-          }),
-          headers: { "Content-type": "application/json" },
-        }
-      ).then((res) => {
-        setIsLoading(false)
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDi9WstSBmbs3f6YcPzcvzqdIf7sGrtA24";
+    }
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        email: enteredEmail,
+        password: enteredPassword,
+        returnSecureToken: true,
+      }),
+      headers: { "Content-type": "application/json" },
+    })
+      .then((res) => {
+        setIsLoading(false);
         if (res.ok) {
-          console.log(res)
+          return res.json();
         } else {
           return res.json().then((data) => {
-           alert(data.error.message)
-          })
+            let errorMessage = "Authentication failed!";
+
+            throw new Error(errorMessage);
+          });
         }
-      }).catch((error) => {
-        setIsLoading(false); // Set isLoading to false if an error occurs
-        console.log(error);
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+       alert(error.message)
       });
-    }
   };
 
   return (
@@ -65,7 +70,11 @@ const AuthForm = () => {
           />
         </div>
         <div className={classes.actions}>
-       {isLoading ? <p style={{color: 'white'}}>Sending request...</p> : <button>{isLogin ? "Login" : "Create Account"}</button>}
+          {isLoading ? (
+            <p style={{ color: "white" }}>Sending request...</p>
+          ) : (
+            <button>{isLogin ? "Login" : "Create Account"}</button>
+          )}
           <button
             type="button"
             className={classes.toggle}
