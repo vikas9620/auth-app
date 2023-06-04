@@ -1,9 +1,12 @@
 import classes from './ProfileForm.module.css';
 import { useRef, useContext } from 'react';
 import AuthContext from '../../store/auth-context';
+import { useNavigate } from 'react-router';
+
 const ProfileForm = () => {
   const newPasswordRef = useRef()
   const AuthCtx= useContext(AuthContext)
+  const navigate = useNavigate()
   const submitHandler = (event)=>{
     event.preventDefault();
     const enteredNewPassword = newPasswordRef.current.value
@@ -17,7 +20,7 @@ fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDi9Ws
   }),
   headers: { 'content-type': 'application/json' },
 }).then(res =>{
-
+navigate('/auth')
 
 })
     
