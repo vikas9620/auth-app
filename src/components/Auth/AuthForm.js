@@ -49,6 +49,7 @@ const AuthCtx= useContext(AuthContext)
       })
       .then((data) => {
     AuthCtx.login(data.idToken)
+    console.log(data.idToken);
       })
       .catch((error) => {
        alert(error.message)
